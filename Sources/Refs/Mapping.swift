@@ -22,6 +22,15 @@ public extension Reference{
     }
     
     
+    ///Computes a reference to some new value given a way to transform the receiver's referenced value to the new value.
+    /// - Parameters:
+    ///     - transform: A transformation to be applied to the referenced value.
+    /// - Returns: A reference to a transformed value.
+    func map<Arrow : RefArrow>(_ transform: Arrow) -> IndirectRef<Self, Arrow.Part> where Arrow.Whole == Value{
+        Arrow.compose(ref: self, arrow: transform)
+    }
+    
+    
 }
 
 
@@ -41,13 +50,22 @@ public extension MutableReference{
     }
     
     
-    ///Computes a reference to some new value given a writable keypath.
-    /// - Parameters:
-    ///     - keypath: A mutable key path.
-    /// - Returns: A reference to a transformed value.
-    func map<T>(mutating keypath: WritableKeyPath<Value, T>) -> IndirectMutableRef<Self, T>{
-        IndirectMutableRef(underlying: self,
-                           keypath: keypath)
+    func map<Arrow : MutableRefArrow>(mutating arrow: Arrow) -> IndirectMutableRef<Self, Arrow.Part> where Arrow.Whole == Value {
+        Arrow.compose(ref: self, arrow: arrow)
     }
+    
+    
+}
+
+
+extension WritableKeyPath : MutableRefArrow {
+   
+    public typealias Whole = Root
+    public typealias Part = Value
+    
+    public static func compose<Ref>(ref: Ref, arrow: WritableKeyPath<Root, Value>) -> IndirectMutableRef<Ref, Value> where Ref : MutableReference, Root == Ref.Value {
+        IndirectMutableRef<Ref, Value>(underlying: ref,
+                                       keypath: arrow)
+      }
     
 }
