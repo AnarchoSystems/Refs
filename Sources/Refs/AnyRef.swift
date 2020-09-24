@@ -25,8 +25,8 @@ public struct AnyRef<Value> : Reference{
     ///Initializes the reference with a constant value.
     /// - Parameters:
     ///     - value: The constant value that can't be changed.
-    public init(value: Value){
-        self = AnyRef{value}
+    public init(wrappedValue: Value){
+        self = AnyRef{wrappedValue}
     }
     
     //See documentation of Reference protocol
@@ -77,8 +77,8 @@ public struct AnyMutableRef<Value> : MutableReference{
     ///Initializes the reference with a constant value.
     /// - Parameters:
     ///     - value: The constant value that can't be changed.
-    public init(value: Value){
-        var mutable = value
+    public init(wrappedValue: Value){
+        var mutable = wrappedValue
         self = AnyMutableRef({mutable},
                              {change in change(&mutable)})
     }

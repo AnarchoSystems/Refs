@@ -51,7 +51,7 @@ extension Atomic : MutableReference where Underlying : MutableReference{
     /// - Parameters:
     ///     - value: The initial value in memory.
     public init<Value>(value: Value) where Underlying == AnyMutableRef<Value>{
-        self = Atomic(AnyMutableRef(value: value))
+        self = Atomic(AnyMutableRef(wrappedValue: value))
     }
     
     //See documentation of MutableReference protocol
@@ -113,7 +113,7 @@ extension BlockingAtomic : MutableReference where Underlying : MutableReference{
     /// - Parameters:
     ///     - value: The initial value in memory.
     public init<Value>(value: Value) where Underlying == AnyMutableRef<Value>{
-        self = BlockingAtomic(AnyMutableRef(value: value))
+        self = BlockingAtomic(AnyMutableRef(wrappedValue: value))
     }
     
     //See documentation of MutableReference protocol
